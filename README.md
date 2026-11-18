@@ -49,3 +49,7 @@ Regenerate the dashboard after editing `grafana/build_dashboard.py`: `.venv/bin/
 ## SOC divergence
 
 `VictronSocDivergence` fires when feeds that should match report different SOC while on grid. This usually means one BMS counter is stale. Many BMSs only re-sync SOC at a full-charge voltage threshold; if the GX's DVCC charge voltage limit sits below that threshold, the counter never corrects. Briefly raising the limit above the threshold re-syncs it. As an example, a Seplos 16S BMS re-syncs when the pack passes 56.0 V.
+
+## Licence
+
+MIT. See `LICENSE`.
