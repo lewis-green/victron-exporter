@@ -1,0 +1,7 @@
+// Scrape the Victron exporter. Point forward_to at your existing remote_write component.
+prometheus.scrape "victron" {
+  targets         = [{"__address__" = "victron-exporter:9105"}]
+  job_name        = "victron"
+  scrape_interval = "15s"
+  forward_to      = [prometheus.remote_write.default.receiver]
+}

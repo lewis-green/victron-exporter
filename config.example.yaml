@@ -1,0 +1,9 @@
+# Copy to config.yaml and adjust.
+feeds:
+  - name: feed-a
+    host: 192.0.2.10   # IP or hostname of the GX device
+  - name: feed-b
+    host: 192.0.2.11
+# listen_port: 9105
+# stale_seconds: 120
+# keepalive_seconds: 30

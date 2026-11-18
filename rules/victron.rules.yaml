@@ -1,0 +1,58 @@
+groups:
+  - name: victron
+    rules:
+      - alert: VictronFeedOnBattery
+        expr: victron_grid_connected == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "{{ $labels.feed }} is running on battery"
+      - alert: VictronBatterySocLow
+        expr: victron_battery_soc_percent < 50
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.feed }} battery SOC is {{ $value | printf \"%.0f\" }}%"
+      - alert: VictronBatterySocCritical
+        expr: victron_battery_soc_percent < 25
+        for: 2m
+        labels: {severity: critical}
+        annotations:
+          summary: "{{ $labels.feed }} battery SOC is {{ $value | printf \"%.0f\" }}%"
+      - alert: VictronSocDivergence
+        expr: (max(victron_battery_soc_percent) - min(victron_battery_soc_percent)) > 5 and min(victron_grid_connected) == 1
+        for: 30m
+        labels: {severity: warning}
+        annotations:
+          summary: "Battery SOC differs by {{ $value | printf \"%.0f\" }}% between feeds while all are on grid"
+          description: "One BMS state-of-charge counter is probably stale and needs a full-charge re-sync."
+      - alert: VictronAlarmWarning
+        expr: victron_alarm == 1
+        for: 1m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.feed }} {{ $labels.source }} warning: {{ $labels.alarm }}"
+      - alert: VictronAlarmActive
+        expr: victron_alarm == 2
+        for: 1m
+        labels: {severity: critical}
+        annotations:
+          summary: "{{ $labels.feed }} {{ $labels.source }} alarm: {{ $labels.alarm }}"
+      - alert: VictronCellSpreadHigh
+        expr: (victron_battery_cell_voltage_max_volts - victron_battery_cell_voltage_min_volts) > 0.05
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.feed }} cell spread is {{ $value | printf \"%.3f\" }} V"
+      - alert: VictronFeedDataStale
+        expr: victron_up == 0 or (time() - victron_last_update_timestamp_seconds) > 300
+        for: 5m
+        labels: {severity: critical}
+        annotations:
+          summary: "No fresh data from {{ $labels.feed }}"
+      - alert: VictronExporterDown
+        expr: absent(victron_up)
+        for: 5m
+        labels: {severity: critical}
+        annotations:
+          summary: "The Victron exporter is not being scraped"

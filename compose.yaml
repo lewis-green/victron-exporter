@@ -1,0 +1,9 @@
+services:
+  victron-exporter:
+    image: ghcr.io/lewis-green/victron-exporter:latest
+    # build: .   # uncomment to build locally instead of pulling
+    restart: unless-stopped
+    volumes:
+      - ./config.yaml:/etc/victron-exporter/config.yaml:ro
+    expose:
+      - "9105"
